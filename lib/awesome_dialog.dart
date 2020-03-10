@@ -38,8 +38,8 @@ class AwesomeDialog {
       {@required this.context,
       this.dialogType,
       this.customHeader,
-      this.tittle,
-      this.desc,
+      this.tittle = '',
+      this.desc = '',
       this.body,
       this.btnOk,
       this.btnCancel,
@@ -64,36 +64,40 @@ class AwesomeDialog {
           context != null,
         );
 
-  Future show() {
-    return showDialog(
+  Future<bool> show() {
+    return showDialog<bool>(
         context: this.context,
         barrierDismissible: dismissOnTouchOutside,
         builder: (BuildContext context) {
-          switch (animType) {
-            case AnimType.SCALE:
-              return Scale(
-                  scalebegin: 0.1,
-                  curve: Curves.fastLinearToSlowEaseIn,
-                  child: _buildDialog());
-              break;
-            case AnimType.LEFTSLIDE:
-              return Slide(from: SlideFrom.LEFT, child: _buildDialog());
-              break;
-            case AnimType.RIGHSLIDE:
-              return Slide(from: SlideFrom.RIGHT, child: _buildDialog());
-              break;
-            case AnimType.BOTTOMSLIDE:
-              return Slide(from: SlideFrom.BOTTOM, child: _buildDialog());
-              break;
-            case AnimType.TOPSLIDE:
-              return Slide(from: SlideFrom.TOP, child: _buildDialog());
-              break;
-            default:
-              return _buildDialog();
-          }
+          return build();
         }).then((_) {
       if (onDissmissCallback != null) onDissmissCallback();
     });
+  }
+
+  Widget build() {
+    switch (animType) {
+      case AnimType.SCALE:
+        return Scale(
+            scalebegin: 0.1,
+            curve: Curves.fastLinearToSlowEaseIn,
+            child: _buildDialog());
+        break;
+      case AnimType.LEFTSLIDE:
+        return Slide(from: SlideFrom.LEFT, child: _buildDialog());
+        break;
+      case AnimType.RIGHSLIDE:
+        return Slide(from: SlideFrom.RIGHT, child: _buildDialog());
+        break;
+      case AnimType.BOTTOMSLIDE:
+        return Slide(from: SlideFrom.BOTTOM, child: _buildDialog());
+        break;
+      case AnimType.TOPSLIDE:
+        return Slide(from: SlideFrom.TOP, child: _buildDialog());
+        break;
+      default:
+        return _buildDialog();
+    }
   }
 
   _buildDialog() {
@@ -118,7 +122,7 @@ class AwesomeDialog {
   _buildFancyButtonOk() {
     return AnimatedButton(
       pressEvent: () {
-        Navigator.of(context, rootNavigator: useRootNavigator).pop();
+        Navigator.of(context, rootNavigator: useRootNavigator).pop(true);
         btnOkOnPress();
       },
       text: btnOkText ?? 'Ok',
@@ -130,7 +134,7 @@ class AwesomeDialog {
   _buildFancyButtonCancel() {
     return AnimatedButton(
       pressEvent: () {
-        Navigator.of(context, rootNavigator: useRootNavigator).pop();
+        Navigator.of(context, rootNavigator: useRootNavigator).pop(false);
         btnCancelOnPress();
       },
       text: btnCancelText ?? 'Cancel',
@@ -140,6 +144,6 @@ class AwesomeDialog {
   }
 
   dissmiss() {
-    Navigator.of(context, rootNavigator: useRootNavigator).pop();
+    Navigator.of(context, rootNavigator: useRootNavigator).pop(false);
   }
 }
