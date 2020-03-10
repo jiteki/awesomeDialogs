@@ -64,15 +64,16 @@ class AwesomeDialog {
           context != null,
         );
 
-  Future<bool> show() {
-    return showDialog<bool>(
+  Future<bool> show() async {
+    var result = await showDialog<bool>(
         context: this.context,
+        useRootNavigator: this.useRootNavigator,
         barrierDismissible: dismissOnTouchOutside,
         builder: (BuildContext context) {
           return build();
-        }).then((_) {
-      if (onDissmissCallback != null) onDissmissCallback();
-    });
+        });
+    if (onDissmissCallback != null) onDissmissCallback();
+    return result ?? false;
   }
 
   Widget build() {
